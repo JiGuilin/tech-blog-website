@@ -117,10 +117,13 @@ function loadArticle() {
                 });
                 
                 // 移除引言 blockquote（banner 已有标题和元信息）
-                const firstBlockquote = articleContent.querySelector('blockquote');
-                if (firstBlockquote && firstBlockquote.textContent.includes('每日精选技术资讯')) {
-                    firstBlockquote.remove();
-                }
+                const blockquotes = articleContent.querySelectorAll('blockquote');
+                blockquotes.forEach(bq => {
+                    const text = bq.textContent;
+                    if (text.includes('每日精选技术资讯') || text.includes('明日继续')) {
+                        bq.remove();
+                    }
+                });
                 
                 // 移除头图（banner 已有）
                 const images = articleContent.querySelectorAll('img');
