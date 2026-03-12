@@ -40,6 +40,7 @@ function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
+    console.log('🎨 主题已切换：' + newTheme);
 }
 
 // 更新主题按钮文字
@@ -55,7 +56,10 @@ function updateThemeText() {
 function initThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
+        themeToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleTheme();
+        });
     }
     
     // T 键快速切换
@@ -145,6 +149,8 @@ function scrollToTop() {
 
 // ========== 初始化 ==========
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 博客系统初始化...');
+    
     // 初始化主题
     initTheme();
     initThemeToggle();
@@ -158,21 +164,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const nav = document.getElementById('navbar');
         const currentScroll = window.scrollY;
         
-        if (currentScroll > 50) {
-            nav.classList.add('scrolled');
-            nav.style.background = 'rgba(13, 17, 23, 0.98)';
-        } else {
-            nav.classList.remove('scrolled');
-            nav.style.background = 'rgba(13, 17, 23, 0.95)';
+        if (nav) {
+            if (currentScroll > 50) {
+                nav.classList.add('scrolled');
+                nav.style.background = 'rgba(13, 17, 23, 0.98)';
+            } else {
+                nav.classList.remove('scrolled');
+                nav.style.background = 'rgba(13, 17, 23, 0.95)';
+            }
+            
+            // 导航栏隐藏/显示
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                nav.style.transform = 'translateY(-100%)';
+            } else {
+                nav.style.transform = 'translateY(0)';
+            }
+            lastScroll = currentScroll;
         }
-        
-        // 导航栏隐藏/显示
-        if (currentScroll > lastScroll && currentScroll > 100) {
-            nav.style.transform = 'translateY(-100%)';
-        } else {
-            nav.style.transform = 'translateY(0)';
-        }
-        lastScroll = currentScroll;
         
         // 回到顶部按钮
         const backToTop = document.getElementById('back-to-top');
