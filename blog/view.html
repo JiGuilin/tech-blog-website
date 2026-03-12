@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="ngrok-skip-browser-warning" content="true">
+    <title>博客文章</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 本地托管 marked.js -->
+    <script src="../js/marked.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --border: #30363d;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success: #3fb950;
+            --warning: #d29922;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* 顶部进度条 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gradient);
+            z-index: 9999;
+            transition: width 0.1s;
+        }
+        
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s;
+        }
+        
+        nav.scrolled {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .logo:hover {
+            transform: translateX(-5px);
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        /* 主容器 */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+        
+        /* 文章头部 */
+        .article-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .article-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+        
+        .article-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        
+        .article-title {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* 文章内容 */
+        .article {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .article-content {
+            line-height: 1.8;
+        }
+        
+        .article-content h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .article-content h2 {
+            color: var(--accent);
+            margin: 2rem 0 1rem;
+            font-size: 1.6rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .article-content h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 1.6rem;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+        
+        .article-content h3 {
+            color: var(--text-primary);
+            margin: 1.5rem 0 0.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .article-content p {
+            margin: 1rem 0;
+        }
+        
+        .article-content a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+        
+        .article-content a:hover {
+            border-bottom-color: var(--accent);
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .article-content li {
+            margin: 0.5rem 0;
+            position: relative;
+        }
+        
+        .article-content blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            background: rgba(88, 166, 255, 0.05);
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+        }
+        
+        .article-content blockquote p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .article-content code {
+            background: var(--bg-secondary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+            color: var(--accent-hover);
+        }
+        
+        .article-content pre {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+        
+        .article-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        
+        .article-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content th, .article-content td {
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+        
+        .article-content th {
+            background: var(--bg-secondary);
+            color: var(--accent);
+        }
+        
+        .article-content tr:hover {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        
+        /* 底部导航 */
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .share-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        /* 回到顶部 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(88, 166, 255, 0.4);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 30px rgba(88, 166, 255, 0.6);
+        }
+        
+        /* 加载动画 */
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 代码块语言标签 */
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.25rem 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container { padding: 6rem 1rem 2rem; }
+            .article { padding: 1.5rem; }
+            .article-title { font-size: 1.8rem; }
+            .article-meta { flex-direction: column; gap: 0.5rem; }
+            .article-footer { flex-direction: column; gap: 1rem; }
+            nav { padding: 0.75rem 1rem; }
+            .back-btn span { display: none; }
+        }
+        
+        /* 打印样式 */
+        @media print {
+            nav, .back-to-top, .share-buttons { display: none; }
+            .container { padding: 2rem; }
+            .article { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 进度条 -->
+    <div class="progress-bar" id="progress-bar"></div>
+    
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <i class="fas fa-code"></i>
+                <span>MyBlog</span>
+            </a>
+            <div class="nav-right">
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-list"></i>
+                    <span>博客列表</span>
+                </a>
+                <a href="../index.html" class="back-btn">
+                    <i class="fas fa-home"></i>
+                    <span>首页</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 文章头部 -->
+        <header class="article-header" id="article-header">
+            <span class="article-badge">
+                <i class="fas fa-newspaper"></i> 技术日报
+            </span>
+            <h1 class="article-title" id="article-title">加载中...</h1>
+            <div class="article-meta" id="article-meta">
+                <div class="meta-item">
+                    <i class="far fa-calendar"></i>
+                    <span style="margin-right: 0.3rem; color: var(--accent);">日期:</span>
+                    <span id="publish-date">-</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-tags"></i>
+                    <span style="margin-right: 0.3rem; color: var(--accent);">标签:</span>
+                    <span id="article-tags">技术资讯</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span style="margin-right: 0.3rem; color: var(--accent);">字数:</span>
+                    <span id="word-count">0 字</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 文章内容 -->
+        <article class="article">
+            <div class="article-content" id="article-content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在加载文章...</p>
+                </div>
+            </div>
+            
+            <!-- 文章底部 -->
+            <footer class="article-footer">
+                <div class="share-buttons">
+                    <button class="share-btn" onclick="copyLink()" title="复制链接">
+                        <i class="fas fa-link"></i>
+                    </button>
+                    <button class="share-btn" onclick="window.print()" title="打印">
+                        <i class="fas fa-print"></i>
+                    </button>
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                    <i class="fas fa-robot"></i> 本文由自动化脚本生成
+                </div>
+            </footer>
+        </article>
+    </div>
+
+    <!-- 回到顶部 -->
+    <button class="back-to-top" id="back-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // 等待 marked 加载完成
+        function initMarked() {
+            if (typeof marked === 'undefined') {
+                console.log('marked 未加载，等待中...');
+                setTimeout(initMarked, 100);
+                return;
+            }
+            
+            // 配置 marked
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                highlight: function(code, lang) {
+                    return code;
+                }
+            });
+            
+            // 加载文章
+            loadArticle();
+        }
+        
+        // DOM 加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initMarked);
+
+        // 滚动进度
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+            
+            // 导航栏阴影
+            const navbar = document.getElementById('navbar');
+            if (winScroll > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            // 回到顶部按钮
+            const backToTop = document.getElementById('back-to-top');
+            if (winScroll > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // 回到顶部
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 复制链接
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('链接已复制到剪贴板！');
+            });
+        }
+
+        // 加载文章
+        async function loadArticle() {
+            const params = new URLSearchParams(window.location.search);
+            const file = params.get('file') || '2026-03-11.md';
+            
+            console.log('加载文章:', file);
+            
+            try {
+                const response = await fetch(file);
+                if (!response.ok) {
+                    throw new Error('文章不存在：' + file);
+                }
+                
+                let markdown = await response.text();
+                console.log('文章加载成功，长度:', markdown.length);
+                
+                // 移除 frontmatter (--- 之间的内容)
+                markdown = markdown.replace(/^---\n[\s\S]*?\n---\n/, '');
+                
+                const html = marked.parse(markdown);
+                console.log('Markdown 解析成功');
+                
+                // 提取标题
+                const titleMatch = markdown.match(/^title:\s*(.+)$/m);
+                const title = titleMatch ? titleMatch[1].trim() : '博客文章';
+                
+                // 提取日期
+                const dateMatch = markdown.match(/^date:\s*(.+)$/m);
+                const date = dateMatch ? dateMatch[1].trim() : file.replace('.md', '');
+                
+                // 提取标签
+                const tagsMatch = markdown.match(/^tags:\s*\[(.+)\]$/m);
+                const tags = tagsMatch ? tagsMatch[1].trim() : '技术资讯';
+                
+                // 提取头图
+                const coverMatch = markdown.match(/^cover:\s*(.+)$/m);
+                const cover = coverMatch ? coverMatch[1].trim() : null;
+                
+                // 提取图标
+                const iconMatch = markdown.match(/^icon:\s*(.+)$/m);
+                const icon = iconMatch ? iconMatch[1].trim() : '📝';
+                
+                // 字数统计
+                const wordCount = markdown.length;
+                
+                // 更新页面
+                document.getElementById('article-title').innerHTML = `${icon} ${title}`;
+                document.getElementById('publish-date').textContent = date;
+                document.getElementById('article-tags').textContent = tags;
+                document.getElementById('word-count').textContent = `${wordCount} 字`;
+                document.title = `${title} | 我的技术博客`;
+                
+                // 如果有头图，添加到页面
+                if (cover && cover !== 'none') {
+                    const coverImg = document.createElement('img');
+                    coverImg.src = cover;
+                    coverImg.alt = '文章头图';
+                    coverImg.className = 'article-cover';
+                    coverImg.style.maxWidth = '100%';
+                    coverImg.style.display = 'block';
+                    coverImg.style.margin = '0 auto 1.5rem';
+                    
+                    // 插入到标题下方
+                    const titleEl = document.getElementById('article-title');
+                    titleEl.parentElement.insertBefore(coverImg, titleEl.nextSibling);
+                }
+                
+
+                
+                // 渲染内容
+                document.getElementById('article-content').innerHTML = html;
+                
+                // 添加代码块复制按钮
+                document.querySelectorAll('pre').forEach(pre => {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.margin = '1.5rem 0';
+                    
+                    const codeHeader = document.createElement('div');
+                    codeHeader.className = 'code-header';
+                    codeHeader.innerHTML = `
+                        <span><i class="fas fa-code"></i> Code</span>
+                        <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> 复制</button>
+                    `;
+                    
+                    pre.parentNode.insertBefore(wrapper, pre);
+                    wrapper.appendChild(codeHeader);
+                    wrapper.appendChild(pre);
+                });
+                
+                // 添加外部链接图标
+                document.querySelectorAll('.article-content a[href^="http"]').forEach(link => {
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.innerHTML += ' <i class="fas fa-external-link-alt" style="font-size:0.7em"></i>';
+                });
+                
+            } catch (e) {
+                document.getElementById('article-content').innerHTML = `
+                    <div style="text-align: center; padding: 4rem; color: var(--text-secondary);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--warning);"></i>
+                        <h2 style="color: var(--text-primary); margin-bottom: 0.5rem;">文章加载失败</h2>
+                        <p>${e.message}</p>
+                        <a href="index.html" class="back-btn" style="display: inline-flex; margin-top: 1rem;">
+                            <i class="fas fa-arrow-left"></i>
+                            <span style="margin-left: 0.5rem;">返回博客列表</span>
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        // 复制代码
+        function copyCode(btn) {
+            const pre = btn.closest('div').querySelector('pre');
+            const code = pre.querySelector('code') || pre;
+            navigator.clipboard.writeText(code.textContent).then(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i> 复制';
+                }, 2000);
+            });
+        }
+
+        // 不再在 DOMContentLoaded 时调用，由 initMarked 调用
+        // document.addEventListener('DOMContentLoaded', loadArticle);
+    </script>
+</body>
+</html>

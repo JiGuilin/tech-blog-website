@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="ngrok-skip-browser-warning" content="true">
+    <title>我的个人博客 | Tech Blog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --border: #30363d;
+            --code-bg: #1f2428;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* 背景动画 - 增强版 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at top, rgba(88, 166, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(118, 75, 162, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: bgPulse 10s ease-in-out infinite;
+        }
+        
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* 网格背景 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(88, 166, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(88, 166, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* 滚动条 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+        
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s;
+        }
+        
+        nav.scrolled {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .logo:hover {
+            transform: translateX(-5px);
+            text-shadow: 0 0 20px rgba(88, 166, 255, 0.5);
+        }
+        
+        .logo::before {
+            content: '<';
+            color: var(--text-secondary);
+        }
+        
+        .logo::after {
+            content: '/>';
+            color: var(--text-secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            position: relative;
+        }
+        
+        /* 导航栏当前页面指示器 */
+        .nav-links li {
+            position: relative;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a {
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 英雄区粒子背景 */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(88, 166, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--gradient);
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 40px rgba(88, 166, 255, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .hero-avatar:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 0 80px rgba(88, 166, 255, 0.8);
+        }
+        
+        .hero-avatar:active {
+            transform: scale(0.95);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(88, 166, 255, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(88, 166, 255, 0.8); }
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero .tagline {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .hero .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(63, 185, 80, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 20px;
+            color: var(--success);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            animation: pulse-green 2s ease-in-out infinite;
+            cursor: default;
+        }
+        
+        .hero .status-badge:hover {
+            background: rgba(63, 185, 80, 0.2);
+            transform: scale(1.05);
+        }
+        
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(63, 185, 80, 0); }
+        }
+        
+        /* 打字机光标增强 */
+        .typing {
+            border-right: 3px solid var(--accent);
+            animation: blink 0.7s infinite;
+            padding-right: 2px;
+        }
+        
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        
+        .hero .typing {
+            color: var(--accent);
+            border-right: 2px solid var(--accent);
+            animation: blink 0.7s infinite;
+        }
+        
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+        
+        .social-links a {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-links a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.4s;
+        }
+        
+        .social-links a:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .social-links a:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 30px rgba(88, 166, 255, 0.4);
+        }
+        
+        /* 通用区块样式 */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+        
+        .section-title span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 章节标题高亮框 */
+        .section-highlight {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: rgba(88, 166, 255, 0.1);
+            border-radius: 8px;
+            z-index: 0;
+            transform: scaleX(0);
+            transition: transform 0.5s;
+        }
+        
+        section:hover .section-highlight {
+            transform: scaleX(1);
+        }
+        
+        .section-title::before {
+            content: '//';
+            color: var(--accent);
+            font-family: monospace;
+            animation: codeBlink 1s infinite;
+        }
+        
+        @keyframes codeBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--border), transparent);
+            margin-left: 1rem;
+        }
+        
+        /* 关于我 */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        
+        .about-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .about-card h3::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+        
+        .about-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        /* 技能列表 */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .skill-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(88, 166, 255, 0.2);
+        }
+        
+        /* 技能条动画 */
+        @keyframes slideIn {
+            from { width: 0; }
+        }
+        
+        .skill-progress {
+            animation: slideIn 1.5s ease-out;
+        }
+        
+        /* 浮动粒子 - 增强版 */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.3;
+            animation: float 20s infinite;
+            box-shadow: 0 0 10px var(--accent);
+        }
+        
+        .particle:nth-child(odd) {
+            background: var(--gradient);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg) translateX(0); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(720deg) translateX(50px); opacity: 0; }
+        }
+        
+        /* 鼠标悬停光晕效果 */
+        .glow-effect {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(88, 166, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            display: none;
+        }
+        
+        /* 博客状态卡片 */
+        .blog-status-card {
+            background: linear-gradient(135deg, rgba(63, 185, 80, 0.1) 0%, rgba(88, 166, 255, 0.1) 100%);
+            border: 1px solid var(--success);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            animation: statusGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes statusGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(63, 185, 80, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(63, 185, 80, 0.4); }
+        }
+        
+        .blog-status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(63, 185, 80, 0.3);
+        }
+        
+        .blog-status-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .blog-status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            animation: gridFadeIn 1s ease-out;
+        }
+        
+        @keyframes gridFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .blog-status-item:nth-child(1) { animation-delay: 0.1s; }
+        .blog-status-item:nth-child(2) { animation-delay: 0.2s; }
+        .blog-status-item:nth-child(3) { animation-delay: 0.3s; }
+        .blog-status-item:nth-child(4) { animation-delay: 0.4s; }
+        .blog-status-item:nth-child(5) { animation-delay: 0.5s; }
+        .blog-status-item:nth-child(6) { animation-delay: 0.6s; }
+        
+        .blog-status-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: rgba(13, 17, 23, 0.5);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .blog-status-item:hover {
+            background: rgba(88, 166, 255, 0.15);
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 5px 15px rgba(88, 166, 255, 0.3);
+        }
+        
+        .blog-status-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .blog-status-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+        
+        /* 项目卡片悬停效果增强 */
+        .project-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .project-card:hover .project-image {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        /* 技能图标动画 */
+        .skill-icon {
+            transition: all 0.3s;
+        }
+        
+        .skill-card:hover .skill-icon {
+            transform: scale(1.2) rotate(10deg);
+            color: var(--accent-hover);
+        }
+        
+        /* 加载动画 */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .loading-skeleton {
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-secondary) 50%, var(--bg-card) 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        .skill-icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .skill-name {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .skill-bar {
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+        
+        /* 时间线 */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translateX(-5px);
+        }
+        
+        .timeline-date {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-desc {
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        
+        .timeline-item:hover .timeline-desc {
+            color: var(--text-primary);
+        }
+        
+        /* 项目展示 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* 项目卡片数量徽章 */
+        .project-count {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .project-card:hover::before {
+            left: 100%;
+        }
+        
+        .project-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(88, 166, 255, 0.3);
+        }
+        
+        .project-image {
+            height: 180px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        
+        .project-content {
+            padding: 1.5rem;
+        }
+        
+        .project-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .project-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tag {
+            background: var(--bg-secondary);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .project-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .project-links a:hover {
+            color: var(--accent);
+        }
+        
+        /* 博客文章 */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .blog-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .blog-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(88, 166, 255, 0.25);
+        }
+        
+        .blog-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 80%;
+            height: 3px;
+            background: var(--gradient);
+            transition: transform 0.3s;
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .blog-card:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        
+        .blog-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .blog-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .blog-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .read-more {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .read-more:hover {
+            color: var(--accent-hover);
+            gap: 1rem;
+        }
+        
+        .read-more i {
+            transition: transform 0.3s;
+        }
+        
+        .read-more:hover i {
+            transform: translateX(5px);
+        }
+        
+        /* 博客链接特殊样式 */
+        .blog-card .read-more {
+            color: var(--accent);
+        }
+        
+        /* 联系方式 */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        
+        .contact-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(88, 166, 255, 0.2);
+        }
+        
+        .contact-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .contact-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-value {
+            font-size: 1rem;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+        }
+        
+        footer p {
+            color: var(--text-secondary);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        /* 页脚更新提示 */
+        .footer-update {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(63, 185, 80, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            display: inline-block;
+            font-size: 0.85rem;
+            color: var(--success);
+        }
+        
+        .footer-update i {
+            animation: heartbeat 1s infinite;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a {
+            position: relative;
+            padding: 0 0.5rem;
+        }
+        
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">MyBlog</a>
+            <ul class="nav-links">
+                <li><a href="#about">关于</a></li>
+                <li><a href="#skills">技能</a></li>
+                <li><a href="#timeline">经历</a></li>
+                <li><a href="#projects">项目</a></li>
+                <li><a href="blog/index.html">博客</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-avatar">👨‍💻</div>
+            <span class="status-badge">
+                <i class="fas fa-check-circle"></i> 自动化博客系统运行中
+            </span>
+            <h1>你好，我是开发者</h1>
+            <p class="tagline">热爱编程 · 持续学习 · 创造价值</p>
+            <p style="font-size: 1.1rem; color: var(--text-secondary);">
+                我是一名 <span class="typing" id="typing-text"></span>
+            </p>
+            <div class="social-links">
+                <a href="https://github.com/JiGuilin" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" title="微信"><i class="fab fa-weixin"></i></a>
+                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="mailto:your@email.com" title="Email"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section id="about">
+        <h2 class="section-title"><span>关于我</span><div class="section-highlight"></div></h2>
+        <div class="about-grid">
+            <div class="about-card">
+                <h3>🚀 个人简介</h3>
+                <p>一名充满热情的开发者，专注于构建高质量的技术解决方案。相信代码可以改变世界，每天都在为这个目标努力。</p>
+                <p>2026 年 3 月创建了自动化技术博客系统，每日抓取 GitHub Trending、Hacker News 等技术资讯并自动生成博客文章。善于用自动化提升效率，持续学习新技术。</p>
+            </div>
+            <div class="about-card">
+                <h3>📊 快速统计</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                    <div>
+                        <div style="font-size: 2rem; color: var(--accent); font-weight: bold;">5+</div>
+                        <div style="color: var(--text-secondary);">年开发经验</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2rem; color: var(--accent); font-weight: bold;">50+</div>
+                        <div style="color: var(--text-secondary);">完成项目</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2rem; color: var(--accent); font-weight: bold;">100+</div>
+                        <div style="color: var(--text-secondary);">GitHub Stars</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2rem; color: var(--accent); font-weight: bold;">∞</div>
+                        <div style="color: var(--text-secondary);">学习热情</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能列表 -->
+    <section id="skills">
+        <h2 class="section-title"><span>技能栈</span><div class="section-highlight"></div></h2>
+        <div class="skills-container">
+            <div class="skill-card">
+                <div class="skill-icon"><i class="fab fa-python"></i></div>
+                <div class="skill-name">Python / 自动化脚本</div>
+                <div class="skill-bar"><div class="skill-progress" style="width: 92%"></div></div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon"><i class="fab fa-js"></i></div>
+                <div class="skill-name">JavaScript / TypeScript</div>
+                <div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon"><i class="fab fa-react"></i></div>
+                <div class="skill-name">React / Vue</div>
+                <div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon"><i class="fab fa-node"></i></div>
+                <div class="skill-name">Node.js / Express</div>
+                <div class="skill-bar"><div class="skill-progress" style="width: 88%"></div></div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon"><i class="fas fa-robot"></i></div>
+                <div class="skill-name">OpenClaw / AI Agent</div>
+                <div class="skill-bar"><div class="skill-progress" style="width: 95%"></div></div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon"><i class="fab fa-docker"></i></div>
+                <div class="skill-name">Docker / Kubernetes</div>
+                <div class="skill-bar"><div class="skill-progress" style="width: 75%"></div></div>
+            </div>
+        </div>
+        
+        <!-- 博客系统状态 -->
+        <div class="blog-status-card">
+            <div class="blog-status-header">
+                <i class="fas fa-newspaper"></i>
+                <span>🤖 自动化博客系统状态</span>
+            </div>
+            <div class="blog-status-grid">
+                <div class="blog-status-item">
+                    <div class="blog-status-value">✅</div>
+                    <div class="blog-status-label">系统运行</div>
+                </div>
+                <div class="blog-status-item">
+                    <div class="blog-status-value">10</div>
+                    <div class="blog-status-label">GitHub 项目</div>
+                </div>
+                <div class="blog-status-item">
+                    <div class="blog-status-value">10</div>
+                    <div class="blog-status-label">HN 新闻</div>
+                </div>
+                <div class="blog-status-item">
+                    <div class="blog-status-value">9:00</div>
+                    <div class="blog-status-label">下次更新</div>
+                </div>
+                <div class="blog-status-item">
+                    <div class="blog-status-value">Cron</div>
+                    <div class="blog-status-label">调度方式</div>
+                </div>
+                <div class="blog-status-item">
+                    <div class="blog-status-value">24/7</div>
+                    <div class="blog-status-label">运行时间</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 时间线 -->
+    <section id="timeline">
+        <h2 class="section-title"><span>经历</span><div class="section-highlight"></div></h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2024 - 至今</div>
+                <h3 class="timeline-title">高级软件工程师 @ 科技公司</h3>
+                <p class="timeline-desc">负责核心产品开发，带领团队完成多个重要项目，优化系统架构提升性能。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2022 - 2024</div>
+                <h3 class="timeline-title">软件工程师 @ 创业公司</h3>
+                <p class="timeline-desc">从 0 到 1 搭建产品技术架构，参与产品设计和用户增长策略。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2020 - 2022</div>
+                <h3 class="timeline-title">初级开发工程师 @ 互联网公司</h3>
+                <p class="timeline-desc">参与多个 Web 项目开发，积累全栈开发经验。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2016 - 2020</div>
+                <h3 class="timeline-title">计算机科学与技术 本科</h3>
+                <p class="timeline-desc">XX 大学 · 系统学习计算机基础知识，参与多个学生项目和竞赛。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目展示 -->
+    <section id="projects">
+        <h2 class="section-title"><span>项目展示</span><div class="section-highlight"></div></h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-count">🔥 热门</div>
+                <div class="project-image">📰</div>
+                <div class="project-content">
+                    <h3 class="project-title">自动化技术博客系统</h3>
+                    <p class="project-desc">每日自动抓取 GitHub Trending、Hacker News 技术资讯，生成 Markdown 博客文章并定时发布。支持 Cron 调度、Markdown 渲染、响应式网站。</p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">OpenClaw</span>
+                        <span class="tag">Cron</span>
+                        <span class="tag">HTML/CSS</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="blog/index.html"><i class="fas fa-external-link-alt"></i> 访问</a>
+                        <a href="https://github.com/JiGuilin"><i class="fab fa-github"></i> 源码</a>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-image">🛒</div>
+                <div class="project-content">
+                    <h3 class="project-title">电商平台</h3>
+                    <p class="project-desc">一个完整的全栈电商系统，包含商品管理、订单处理、支付集成等功能。</p>
+                    <div class="project-tags">
+                        <span class="tag">React</span>
+                        <span class="tag">Node.js</span>
+                        <span class="tag">MongoDB</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#"><i class="fab fa-github"></i> 源码</a>
+                        <a href="#"><i class="fas fa-external-link-alt"></i> 演示</a>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-image">📱</div>
+                <div class="project-content">
+                    <h3 class="project-title">移动应用</h3>
+                    <p class="project-desc">跨平台移动应用，支持 iOS 和 Android，提供流畅的用户体验。</p>
+                    <div class="project-tags">
+                        <span class="tag">React Native</span>
+                        <span class="tag">Redux</span>
+                        <span class="tag">Firebase</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#"><i class="fab fa-github"></i> 源码</a>
+                        <a href="#"><i class="fas fa-external-link-alt"></i> 下载</a>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-image">🤖</div>
+                <div class="project-content">
+                    <h3 class="project-title">AI 工具集</h3>
+                    <p class="project-desc">集成多种 AI 能力的工具平台，包括文本生成、图像识别等功能。</p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">TensorFlow</span>
+                        <span class="tag">FastAPI</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#"><i class="fab fa-github"></i> 源码</a>
+                        <a href="#"><i class="fas fa-external-link-alt"></i> 演示</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 博客文章 -->
+    <section id="blog">
+        <h2 class="section-title"><span>博客文章</span><div class="section-highlight"></div></h2>
+        <div class="blog-grid">
+            <div class="blog-card">
+                <div class="blog-date">2026-03-11</div>
+                <h3 class="blog-title">📰 技术日报 2026-03-11</h3>
+                <p class="blog-excerpt">每日精选技术资讯，包含 GitHub Trending、Hacker News 热门内容。今日 10 个 GitHub 热门项目 + 10 条 HN 新闻...</p>
+                <a href="blog/view.html?file=2026-03-11.md" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="blog-card">
+                <div class="blog-date">每日更新</div>
+                <h3 class="blog-title">📚 博客列表</h3>
+                <p class="blog-excerpt">查看所有历史技术日报，追踪技术发展趋势...</p>
+                <a href="blog/index.html" class="read-more">查看全部 <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact">
+        <h2 class="section-title"><span>联系我</span><div class="section-highlight"></div></h2>
+        <div class="contact-grid">
+            <a href="mailto:your@email.com" class="contact-card">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <div class="contact-label">Email</div>
+                <div class="contact-value">your@email.com</div>
+            </a>
+            <a href="weixin://" class="contact-card">
+                <div class="contact-icon"><i class="fab fa-weixin"></i></div>
+                <div class="contact-label">微信</div>
+                <div class="contact-value">Linden7552</div>
+            </a>
+            <a href="https://github.com/JiGuilin" target="_blank" class="contact-card">
+                <div class="contact-icon"><i class="fab fa-github"></i></div>
+                <div class="contact-label">GitHub</div>
+                <div class="contact-value">github.com/JiGuilin</div>
+            </a>
+            <a href="#" class="contact-card">
+                <div class="contact-icon"><i class="fab fa-linkedin"></i></div>
+                <div class="contact-label">LinkedIn</div>
+                <div class="contact-value">linkedin.com/in/yourname</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2026 我的个人博客 · Powered by OpenClaw</p>
+        <div class="footer-links">
+            <a href="https://github.com/JiGuilin" target="_blank">GitHub</a>
+            <a href="blog/README.md" target="_blank">关于本站</a>
+            <a href="blog/index.html">博客列表</a>
+        </div>
+        <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.85rem;">
+            🤖 自动化技术博客系统 · 每日 9:00 更新 · 最后更新：2026-03-11
+        </p>
+        <div class="footer-update">
+            <i class="fas fa-heart"></i>
+            <span>网站持续更新中 · 已运行 <span id="footer-uptime">0</span> 小时</span>
+        </div>
+        
+        <script>
+            // 页脚运行时间
+            const siteStartTime = new Date('2026-03-11T16:51:00+08:00');
+            function updateFooterUptime() {
+                const hours = Math.floor((new Date() - siteStartTime) / (1000 * 60 * 60));
+                document.getElementById('footer-uptime').textContent = hours;
+            }
+            setInterval(updateFooterUptime, 60000); // 每分钟更新
+            updateFooterUptime();
+        </script>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <div id="back-to-top" onclick="scrollToTop()" style="
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--gradient);
+        color: white;
+        border: 2px solid var(--accent);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+        z-index: 999;
+        box-shadow: 0 4px 20px rgba(88, 166, 255, 0.5);
+    " title="回到顶部" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- 运行时间计数器 -->
+    <div id="uptime-counter" style="
+        position: fixed;
+        bottom: 2rem;
+        left: 2rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        z-index: 999;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        cursor: pointer;
+        transition: all 0.3s;
+    " title="点击切换显示格式">
+        <i class="fas fa-clock" style="color: var(--accent);"></i>
+        <span id="uptime">系统运行中...</span>
+    </div>
+
+    <script>
+        // 运行时间计数器 - 增强版
+        const startTime = new Date('2026-03-11T16:51:00+08:00');
+        let uptimeFormat = 'detailed'; // detailed | simple
+        
+        function updateUptime() {
+            const now = new Date();
+            const diff = now - startTime;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            const uptimeEl = document.getElementById('uptime');
+            if (uptimeFormat === 'detailed') {
+                uptimeEl.textContent = `${days}天 ${hours}时 ${minutes}分 ${seconds}秒`;
+            } else {
+                const totalSeconds = Math.floor(diff / 1000);
+                uptimeEl.textContent = `${totalSeconds.toLocaleString()}秒`;
+            }
+        }
+        setInterval(updateUptime, 1000);
+        updateUptime();
+
+        // 运行时间计数器点击切换
+        document.getElementById('uptime-counter').addEventListener('click', function() {
+            uptimeFormat = uptimeFormat === 'detailed' ? 'simple' : 'detailed';
+            // 添加点击反馈
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => this.style.transform = 'scale(1)', 150);
+        });
+
+        // 双击回到顶部
+        let lastClick = 0;
+        document.addEventListener('click', (e) => {
+            if (e.detail === 2) { // 双击
+                const now = Date.now();
+                if (now - lastClick < 500) {
+                    scrollToTop();
+                }
+                lastClick = now;
+            }
+        });
+    </script>
+
+    <!-- 浮动粒子背景 -->
+    <div id="particles"></div>
+
+    <!-- 雪花特效容器 -->
+    <div id="snow-container"></div>
+
+    <!-- 访客计数器 -->
+    <div class="visitor-counter" id="visitor-counter" title="本站访客统计">
+        <i class="fas fa-eye"></i>
+        <span>访客：<span id="visitor-count">0</span></span>
+        <span style="margin: 0 0.5rem; opacity: 0.5;">|</span>
+        <i class="fas fa-heart" style="color: #e91e63; animation: heartbeat 1s infinite;"></i>
+    </div>
+
+    <script>
+        // 真实访客计数器（基于 localStorage）
+        function initVisitorCounter() {
+            const STORAGE_KEY = 'site_visit_count';
+            const VISITOR_KEY = 'site_unique_visitors';
+            
+            // 获取当前会话是否已计数
+            let sessionCounted = sessionStorage.getItem('visit_counted');
+            
+            // 获取总访问次数
+            let totalVisits = parseInt(localStorage.getItem(STORAGE_KEY) || '0');
+            
+            // 获取独立访客数
+            let uniqueVisitors = parseInt(localStorage.getItem(VISITOR_KEY) || '0');
+            
+            // 如果是新会话，增加计数
+            if (!sessionCounted) {
+                totalVisits++;
+                localStorage.setItem(STORAGE_KEY, totalVisits.toString());
+                sessionStorage.setItem('visit_counted', 'true');
+                
+                // 简单判断独立访客（7 天内）
+                const lastVisit = localStorage.getItem('last_visit_date');
+                const today = new Date().toDateString();
+                if (lastVisit !== today) {
+                    uniqueVisitors++;
+                    localStorage.setItem(VISITOR_KEY, uniqueVisitors.toString());
+                    localStorage.setItem('last_visit_date', today);
+                }
+            }
+            
+            // 显示数据
+            const visitorEl = document.getElementById('visitor-count');
+            visitorEl.textContent = totalVisits.toLocaleString();
+            visitorEl.title = `总访问：${totalVisits}\n独立访客：${uniqueVisitors}\n（基于本地存储统计）`;
+            
+            // 点击显示详细信息
+            document.getElementById('visitor-counter').addEventListener('click', function() {
+                alert(`📊 访问统计\n\n总访问次数：${totalVisits}\n独立访客数：${uniqueVisitors}\n\n注：数据存储在本地浏览器`);
+            });
+        }
+        
+        // 页面加载时初始化
+        initVisitorCounter();
+    </script>
+
+    <style>
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+
+    <script>
+        // 创建浮动粒子 - 增强版
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30; // 增加到 30 个粒子
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (20 + Math.random() * 10) + 's';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // 鼠标悬停光晕效果
+        const glowEffect = document.createElement('div');
+        glowEffect.className = 'glow-effect';
+        glowEffect.style.display = 'block';
+        document.body.appendChild(glowEffect);
+
+        document.addEventListener('mousemove', (e) => {
+            glowEffect.style.left = e.clientX + 'px';
+            glowEffect.style.top = e.clientY + 'px';
+        });
+
+        // 打字机效果
+        const roles = ['全栈开发者', '技术博主', '开源贡献者', '终身学习者'];
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingElement = document.getElementById('typing-text');
+
+        function type() {
+            const currentRole = roles[roleIndex];
+            
+            if (isDeleting) {
+                typingElement.textContent = currentRole.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingElement.textContent = currentRole.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentRole.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % roles.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        // 启动打字机效果
+        document.addEventListener('DOMContentLoaded', type);
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // 导航栏滚动效果 - 增强版
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            const currentScroll = window.scrollY;
+            
+            if (currentScroll > 50) {
+                nav.classList.add('scrolled');
+                nav.style.background = 'rgba(13, 17, 23, 0.98)';
+            } else {
+                nav.classList.remove('scrolled');
+                nav.style.background = 'rgba(13, 17, 23, 0.95)';
+            }
+            
+            // 导航栏隐藏/显示（滚动方向检测）
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                nav.style.transform = 'translateY(-100%)';
+            } else {
+                nav.style.transform = 'translateY(0)';
+            }
+            lastScroll = currentScroll;
+            
+            // 回到顶部按钮
+            const backToTop = document.getElementById('back-to-top');
+            if (backToTop) {
+                if (window.scrollY > 500) {
+                    backToTop.style.opacity = '1';
+                    backToTop.style.visibility = 'visible';
+                } else {
+                    backToTop.style.opacity = '0';
+                    backToTop.style.visibility = 'hidden';
+                }
+            }
+        });
+
+        // 回到顶部
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 快捷操作提示
+        function showQuickTips() {
+            const tips = [
+                '💡 点击头像有惊喜特效！',
+                '💡 运行时间计数器可以点击切换格式！',
+                '💡 访客计数器显示真实访问数据（本地存储）',
+                '💡 今天是 11 日，有雪花特效！',
+                '💡 按 Home 键快速回到顶部！',
+                '💡 按 End 键快速滚动到底部！',
+            ];
+            const tip = tips[Math.floor(Math.random() * tips.length)];
+            console.log('%c' + tip, 'font-size: 12px; color: #58a6ff;');
+        }
+        
+        // 每 30 秒显示一次提示
+        setInterval(showQuickTips, 30000);
+        showQuickTips();
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // Home 键 - 回到顶部
+            if (e.key === 'Home') {
+                e.preventDefault();
+                scrollToTop();
+            }
+            // End 键 - 滚动到底部
+            if (e.key === 'End') {
+                e.preventDefault();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+            // T 键 - 切换主题（未来功能）
+            if (e.key === 't' || e.key === 'T') {
+                console.log('🎨 主题切换功能开发中...');
+            }
+            // ? 键 - 显示快捷键帮助
+            if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+                e.preventDefault();
+                showShortcutsHelp();
+            }
+        });
+
+        // 快捷键帮助
+        function showShortcutsHelp() {
+            const help = `
+⌨️  快捷键帮助
+
+Home  - 回到顶部
+End   - 滚动到底部
+?     - 显示此帮助
+
+💡 更多功能开发中...
+            `.trim();
+            console.log(help);
+            alert(help);
+        }
+
+        // 平滑滚动到锚点 - 增强版
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href.length > 1) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // 更新 URL 而不跳转
+                        history.pushState(null, null, href);
+                    }
+                }
+            });
+        });
+
+        // 页面加载完成后的淡入效果
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // 添加页面可见性检测（节省资源）
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // 页面隐藏时降低动画帧率
+                document.documentElement.style.setProperty('--animation-speed', '0.5');
+                document.title = '💤 休息一下...';
+            } else {
+                // 页面可见时恢复正常
+                document.documentElement.style.setProperty('--animation-speed', '1');
+                document.title = '我的个人博客 | Tech Blog';
+            }
+        });
+
+        // 页面标题滚动效果（Tab 标题）
+        let titleScroll = true;
+        const titleText = '我的个人博客 | Tech Blog';
+        const titleBlink = '✨ 欢迎访问 | ';
+        
+        function titleAnimate() {
+            if (titleScroll && !document.hidden) {
+                document.title = titleBlink + titleText;
+                setTimeout(() => {
+                    if (titleScroll) document.title = titleText;
+                }, 2000);
+            }
+        }
+        
+        // 每 10 秒闪动一次标题
+        setInterval(titleAnimate, 10000);
+
+        // 控制台彩蛋
+        console.log('%c👋 欢迎来到我的个人博客！', 'font-size: 20px; font-weight: bold; color: #58a6ff;');
+        console.log('%c🤖 自动化技术博客系统运行中', 'font-size: 14px; color: #3fb950;');
+        console.log('%c💼 项目展示：https://imply-carotidal-velda.ngrok-free.dev', 'font-size: 12px; color: #8b949e;');
+        console.log('%c💡 提示：点击头像有惊喜哦！', 'font-size: 12px; color: #d29922;');
+
+        // 随机雪花特效（仅冬季月份或特殊日期）
+        const now = new Date();
+        const month = now.getMonth() + 1; // 1-12
+        const day = now.getDate();
+        // 12 月、1 月、2 月或 11 日显示雪花
+        if (month === 12 || month === 1 || month === 2 || day === 11) {
+            function createSnowflake() {
+                const snowflake = document.createElement('div');
+                snowflake.innerHTML = '❄️';
+                snowflake.style.position = 'fixed';
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.top = '-20px';
+                snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                snowflake.style.pointerEvents = 'none';
+                snowflake.style.zIndex = '9998';
+                snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+                document.body.appendChild(snowflake);
+                
+                const duration = Math.random() * 3000 + 3000;
+                snowflake.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 0.8 },
+                    { transform: `translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                ], {
+                    duration: duration,
+                    easing: 'linear'
+                }).onfinish = () => snowflake.remove();
+            }
+
+            // 每 2 秒创建一个雪花
+            setInterval(createSnowflake, 2000);
+
+            // 创建 10 个初始雪花
+            for (let i = 0; i < 10; i++) {
+                setTimeout(createSnowflake, i * 300);
+            }
+        }
+    </script>
+</body>
+</html>
