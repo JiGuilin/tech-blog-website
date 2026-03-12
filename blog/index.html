@@ -481,6 +481,7 @@
             <a href="https://github.com/JiGuilin" target="_blank">GitHub</a>
             <a href="../index.html#blog">返回首页</a>
             <a href="README.md" target="_blank">关于本站</a>
+            <a href="archive.html">文章归档</a>
         </div>
     </footer>
 
@@ -521,9 +522,12 @@
             
             const totalGithub = posts.reduce((sum, post) => sum + (post.githubCount || 10), 0);
             const totalHn = posts.reduce((sum, post) => sum + (post.hnCount || 10), 0);
+            const totalWords = posts.reduce((sum, post) => sum + (post.words || 0), 0);
             
             document.getElementById('total-github').textContent = totalGithub;
             document.getElementById('total-hn').textContent = totalHn;
+            document.getElementById('total-words').textContent = totalWords.toLocaleString();
+            document.getElementById('blog-count').textContent = posts.length;
         }
 
         // 渲染列表

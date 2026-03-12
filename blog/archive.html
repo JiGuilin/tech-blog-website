@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="ngrok-skip-browser-warning" content="true">
+    <title>文章归档 | Archive</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --border: #30363d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* 归档列表 */
+        .archive-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .archive-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .archive-item:hover {
+            border-color: var(--accent);
+            transform: translateX(10px);
+            box-shadow: 0 4px 20px rgba(88, 166, 255, 0.2);
+        }
+
+        .archive-date {
+            min-width: 120px;
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .archive-info {
+            flex: 1;
+        }
+
+        .archive-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .archive-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .archive-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .archive-icon {
+            font-size: 1.5rem;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* 导航 */
+        .back-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+
+        .back-nav:hover {
+            border-color: var(--accent);
+            transform: translateX(-5px);
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .archive-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .archive-date {
+                width: 100%;
+            }
+
+            .archive-meta {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 返回导航 -->
+        <a href="/" class="back-nav">
+            <i class="fas fa-arrow-left"></i>
+            返回首页
+        </a>
+
+        <!-- 页面头部 -->
+        <header class="page-header">
+            <h1><i class="fas fa-archive"></i> 文章归档</h1>
+            <p>按时间排序的所有技术文章</p>
+        </header>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-posts">0</div>
+                <div class="stat-label">总文章数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-words">0</div>
+                <div class="stat-label">总字数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="first-post">-</div>
+                <div class="stat-label">首篇文章</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="latest-post">-</div>
+                <div class="stat-label">最新文章</div>
+            </div>
+        </div>
+
+        <!-- 归档列表 -->
+        <div class="archive-list" id="archive-list">
+            <!-- 动态加载 -->
+        </div>
+
+        <!-- 页脚 -->
+        <footer>
+            <p>© 2026 技术博客自动化系统 · 文章归档</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+                最后更新：<span id="last-update">-</span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 加载归档
+        async function loadArchive() {
+            try {
+                const response = await fetch('blog-list.json');
+                const posts = await response.json();
+
+                // 更新统计
+                document.getElementById('total-posts').textContent = posts.length;
+                
+                const totalWords = posts.reduce((sum, post) => sum + (post.words || 0), 0);
+                document.getElementById('total-words').textContent = totalWords.toLocaleString();
+                
+                if (posts.length > 0) {
+                    document.getElementById('first-post').textContent = posts[posts.length - 1].date.split('-').slice(1).join('/');
+                    document.getElementById('latest-post').textContent = posts[0].date.split('-').slice(1).join('/');
+                }
+
+                // 生成归档列表
+                const archiveList = document.getElementById('archive-list');
+                archiveList.innerHTML = posts.map(post => `
+                    <a href="view.html?file=${post.file}" class="archive-item">
+                        <div class="archive-date">${post.date}</div>
+                        <div class="archive-info">
+                            <div class="archive-title">${post.title}</div>
+                            <div class="archive-meta">
+                                <span><i class="fas fa-file-word"></i> ${post.words || 0} 字</span>
+                                <span><i class="fas fa-tags"></i> ${post.tags || '技术资讯'}</span>
+                                <span><i class="fas fa-calendar"></i> ${post.date}</span>
+                            </div>
+                        </div>
+                        <div class="archive-icon">📰</div>
+                    </a>
+                `).join('');
+
+                // 更新页脚
+                document.getElementById('last-update').textContent = new Date().toLocaleString('zh-CN');
+            } catch (error) {
+                console.error('加载归档失败:', error);
+                document.getElementById('archive-list').innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>加载归档失败，请稍后重试</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', loadArchive);
+    </script>
+</body>
+</html>
