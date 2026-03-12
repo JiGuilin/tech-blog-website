@@ -64,14 +64,45 @@ function loadArticle() {
             return res.text();
         })
         .then(markdown => {
-            const html = marked.parse(markdown);
+            // 解析 front matter
+            const frontMatter = {};
+            let content = markdown;
+            
+            const fmMatch = markdown.match(/^---\n([\s\S]*?)\n---\n/);
+            if (fmMatch) {
+                const fmLines = fmMatch[1].split('\n');
+                fmLines.forEach(line => {
+                    const [key, ...valueParts] = line.split(':');
+                    if (key && valueParts.length > 0) {
+                        let value = valueParts.join(':').trim();
+                        // 处理数组格式 [tag1, tag2]
+                        if (value.startsWith('[') && value.endsWith(']')) {
+                            value = value.slice(1, -1).split(',').map(s => s.trim());
+                        }
+                        frontMatter[key.trim()] = value;
+                    }
+                });
+                // 移除 front matter
+                content = markdown.replace(/^---\n[\s\S]*?\n---\n/, '');
+            }
+            
+            const html = marked.parse(content);
             document.getElementById('article-content').innerHTML = html;
             
-            // 提取文章信息
-            const titleMatch = markdown.match(/^#\s+(.+)$/m);
-            if (titleMatch) {
-                document.getElementById('article-title').textContent = titleMatch[1];
-                document.title = titleMatch[1] + ' | 我的博客';
+            // 使用 front matter 或 markdown 标题
+            const title = frontMatter.title || (markdown.match(/^#\s+(.+)$/m) || [])[1];
+            if (title) {
+                document.getElementById('article-title').textContent = title;
+                document.title = title + ' | 我的博客';
+            }
+            
+            // 更新元信息
+            if (frontMatter.date) {
+                document.getElementById('publish-date').textContent = frontMatter.date;
+            }
+            if (frontMatter.tags) {
+                const tags = Array.isArray(frontMatter.tags) ? frontMatter.tags : [frontMatter.tags];
+                document.getElementById('article-tags').innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join(' ');
             }
             
             // 添加代码复制按钮
