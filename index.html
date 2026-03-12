@@ -1129,6 +1129,9 @@
     </style>
 </head>
 <body>
+    <!-- 页面加载进度条 -->
+    <div class="page-progress" id="page-progress"></div>
+    
     <!-- 导航栏 -->
     <nav id="navbar">
         <div class="nav-container">
@@ -1675,6 +1678,33 @@
 
         // 启动打字机效果
         document.addEventListener('DOMContentLoaded', type);
+
+        // 页面加载进度条
+        function showPageProgress() {
+            const progressBar = document.getElementById('page-progress');
+            if (!progressBar) return;
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20 + 5;
+                if (progress >= 90) {
+                    progress = 90;
+                    clearInterval(interval);
+                }
+                progressBar.style.width = progress + '%';
+            }, 100);
+            
+            // 页面加载完成后完成进度条
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    progressBar.style.width = '100%';
+                    progressBar.classList.add('complete');
+                    setTimeout(() => progressBar.remove(), 500);
+                }, 300);
+            });
+        }
+        
+        showPageProgress();
 
         // 平滑滚动
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

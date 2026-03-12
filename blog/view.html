@@ -50,6 +50,101 @@
             transition: width 0.1s;
         }
         
+        /* 文章目录 */
+        .toc-container {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            width: 250px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            z-index: 999;
+            display: none;
+        }
+        
+        .toc-container.show {
+            display: block;
+        }
+        
+        .toc-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .toc-title i {
+            color: var(--accent);
+        }
+        
+        .toc-list {
+            list-style: none;
+        }
+        
+        .toc-list li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc-list a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .toc-list a:hover {
+            color: var(--accent);
+            background: rgba(88, 166, 255, 0.1);
+        }
+        
+        .toc-list a.active {
+            color: var(--accent);
+            background: rgba(88, 166, 255, 0.15);
+            font-weight: 500;
+        }
+        
+        .toc-h2 {
+            padding-left: 0;
+        }
+        
+        .toc-h3 {
+            padding-left: 1rem;
+        }
+        
+        .toc-h4 {
+            padding-left: 2rem;
+            font-size: 0.8rem;
+        }
+        
+        /* 阅读时间 */
+        .reading-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            background: var(--bg-card);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .reading-time i {
+            color: var(--accent);
+        }
+        
         /* 导航栏 */
         nav {
             position: fixed;
@@ -520,6 +615,17 @@
     </nav>
 
     <div class="container">
+        <!-- 文章目录 -->
+        <div class="toc-container" id="toc-container">
+            <div class="toc-title">
+                <i class="fas fa-list"></i>
+                <span>文章目录</span>
+            </div>
+            <ul class="toc-list" id="toc-list">
+                <!-- 动态生成 -->
+            </ul>
+        </div>
+        
         <!-- 文章头部 -->
         <header class="article-header" id="article-header">
             <span class="article-badge">
@@ -541,6 +647,14 @@
                     <i class="fas fa-chart-line"></i>
                     <span style="margin-right: 0.3rem; color: var(--accent);">字数:</span>
                     <span id="word-count">0 字</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span style="margin-right: 0.3rem; color: var(--accent);">阅读:</span>
+                    <span id="reading-time" class="reading-time">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span id="reading-time-value">-</span>
+                    </span>
                 </div>
             </div>
         </header>
@@ -709,6 +823,12 @@
                 // 渲染内容
                 document.getElementById('article-content').innerHTML = html;
                 
+                // 生成文章目录
+                generateTOC();
+                
+                // 计算阅读时间
+                calculateReadingTime();
+                
                 // 添加代码块复制按钮
                 document.querySelectorAll('pre').forEach(pre => {
                     const wrapper = document.createElement('div');
@@ -758,6 +878,107 @@
                     btn.innerHTML = '<i class="fas fa-copy"></i> 复制';
                 }, 2000);
             });
+        }
+
+        // ========== 文章目录功能 ==========
+        function generateTOC() {
+            const articleContent = document.getElementById('article-content');
+            const tocList = document.getElementById('toc-list');
+            const tocContainer = document.getElementById('toc-container');
+            
+            if (!articleContent || !tocList) return;
+            
+            // 获取所有 H2/H3 标题
+            const headings = articleContent.querySelectorAll('h2, h3, h4');
+            
+            if (headings.length === 0) {
+                tocContainer.style.display = 'none';
+                return;
+            }
+            
+            // 为每个标题添加 ID
+            headings.forEach((heading, index) => {
+                if (!heading.id) {
+                    heading.id = `heading-${index}`;
+                }
+            });
+            
+            // 生成目录
+            tocList.innerHTML = Array.from(headings).map(heading => {
+                const level = heading.tagName.toLowerCase();
+                const text = heading.textContent.trim();
+                return `
+                    <li class="toc-${level}">
+                        <a href="#${heading.id}" data-target="${heading.id}">${text}</a>
+                    </li>
+                `.trim();
+            }).join('');
+            
+            // 显示目录
+            tocContainer.classList.add('show');
+            
+            // 监听滚动高亮
+            window.addEventListener('scroll', () => {
+                const scrollPosition = window.scrollY + 150;
+                
+                headings.forEach((heading, index) => {
+                    const headingTop = heading.offsetTop;
+                    const headingHeight = heading.offsetHeight;
+                    
+                    if (scrollPosition >= headingTop && scrollPosition < headingTop + headingHeight) {
+                        tocList.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+                        const activeLink = tocList.querySelector(`a[data-target="${heading.id}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
+                        }
+                    }
+                });
+            });
+            
+            // 平滑滚动
+            tocList.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+
+        // ========== 阅读时间计算 ==========
+        function calculateReadingTime() {
+            const articleContent = document.getElementById('article-content');
+            const readingTimeEl = document.getElementById('reading-time-value');
+            
+            if (!articleContent || !readingTimeEl) return;
+            
+            // 获取文本内容
+            const text = articleContent.innerText || articleContent.textContent;
+            const wordCount = text.length;
+            
+            // 中文阅读速度：约 300 字/分钟
+            const readingSpeed = 300;
+            const readingTimeMinutes = Math.ceil(wordCount / readingSpeed);
+            
+            // 更新显示
+            if (readingTimeMinutes < 1) {
+                readingTimeEl.textContent = '< 1 分钟';
+            } else if (readingTimeMinutes < 60) {
+                readingTimeEl.textContent = `${readingTimeMinutes} 分钟`;
+            } else {
+                const hours = Math.floor(readingTimeMinutes / 60);
+                const mins = readingTimeMinutes % 60;
+                readingTimeEl.textContent = `${hours}小时${mins}分钟`;
+            }
+            
+            // 更新字数统计
+            const wordCountEl = document.getElementById('word-count');
+            if (wordCountEl) {
+                wordCountEl.textContent = `${wordCount.toLocaleString()} 字`;
+            }
         }
 
         // ========== 主题切换功能 ==========
