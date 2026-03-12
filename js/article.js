@@ -103,6 +103,17 @@ function loadArticle() {
                 }
             }
             
+            // 移除文章内容中的"本文由自动化脚本生成"（底部已有）
+            setTimeout(() => {
+                const articleContent = document.getElementById('article-content');
+                const paragraphs = articleContent.querySelectorAll('p, em');
+                paragraphs.forEach(p => {
+                    if (p.textContent.includes('自动化脚本生成') || p.textContent.includes('最后更新')) {
+                        p.remove();
+                    }
+                });
+            }, 150);
+            
             // 更新元信息
             if (frontMatter.date) {
                 document.getElementById('publish-date').textContent = frontMatter.date;
