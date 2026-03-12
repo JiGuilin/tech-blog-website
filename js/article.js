@@ -28,7 +28,6 @@ function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme');
     const next = current === 'light' ? 'dark' : 'light';
     setTheme(next);
-    console.log('🎨 主题：' + next);
 }
 
 function updateThemeText() {
@@ -46,6 +45,55 @@ function showToast(msg, dur = 2000) {
     t.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--bg-card);color:var(--text-primary);padding:0.75rem 1.5rem;border-radius:8px;border:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,0.3);z-index:10000;font-size:0.95rem;animation:toastIn 0.3s';
     document.body.appendChild(t);
     setTimeout(() => { t.style.animation = 'toastOut 0.3s'; setTimeout(() => t.remove(), 300); }, dur);
+}
+
+// ========== 加载文章 ==========
+function loadArticle() {
+    const params = new URLSearchParams(window.location.search);
+    const file = params.get('file');
+    
+    if (!file) {
+        document.getElementById('article-title').textContent = '文章未找到';
+        document.getElementById('article-content').innerHTML = '<p>请指定文章文件名</p>';
+        return;
+    }
+    
+    fetch(file)
+        .then(res => {
+            if (!res.ok) throw new Error('文章加载失败');
+            return res.text();
+        })
+        .then(markdown => {
+            const html = marked.parse(markdown);
+            document.getElementById('article-content').innerHTML = html;
+            
+            // 提取文章信息
+            const titleMatch = markdown.match(/^#\s+(.+)$/m);
+            if (titleMatch) {
+                document.getElementById('article-title').textContent = titleMatch[1];
+                document.title = titleMatch[1] + ' | 我的博客';
+            }
+            
+            // 添加代码复制按钮
+            document.querySelectorAll('pre').forEach(pre => {
+                const btn = document.createElement('button');
+                btn.className = 'copy-code-btn';
+                btn.innerHTML = '<i class="fas fa-copy"></i> 复制';
+                btn.onclick = () => copyCode(btn);
+                pre.parentNode.insertBefore(btn, pre);
+            });
+            
+            // 生成目录和计算阅读时间
+            setTimeout(() => {
+                generateTOC();
+                calcReadingTime();
+            }, 100);
+        })
+        .catch(err => {
+            console.error('加载失败:', err);
+            document.getElementById('article-title').textContent = '加载失败';
+            document.getElementById('article-content').innerHTML = '<p>文章加载失败，请稍后重试</p>';
+        });
 }
 
 // ========== 目录 ==========
@@ -114,10 +162,15 @@ function copyCode(btn) {
     });
 }
 
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // ========== 初始化 ==========
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 文章页初始化');
     initTheme();
+    loadArticle();
     
     const btn = document.getElementById('theme-toggle');
     if (btn) btn.addEventListener('click', e => { e.preventDefault(); toggleTheme(); });
@@ -125,7 +178,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', e => {
         if (e.key === 't' || e.key === 'T') { e.preventDefault(); toggleTheme(); }
     });
-    
-    generateTOC();
-    calcReadingTime();
 });
