@@ -131,26 +131,21 @@ function renderBlogList(posts) {
 // ========== 更新统计 ==========
 function updateStats(posts) {
     const totalPosts = document.getElementById('total-posts');
-    const totalWords = document.getElementById('total-words');
-    const totalTags = document.getElementById('total-tags');
+    const totalGithub = document.getElementById('total-github');
+    const totalHn = document.getElementById('total-hn');
     
     if (totalPosts) {
         totalPosts.textContent = posts.length;
     }
     
-    if (totalWords) {
-        const words = posts.reduce((sum, post) => sum + (post.words || 0), 0);
-        totalWords.textContent = (words / 1000).toFixed(1) + 'K';
+    if (totalGithub) {
+        const githubCount = posts.reduce((sum, post) => sum + (post.githubCount || 0), 0);
+        totalGithub.textContent = githubCount;
     }
     
-    if (totalTags) {
-        const tags = new Set();
-        posts.forEach(post => {
-            if (post.tags) {
-                post.tags.split(',').forEach(tag => tags.add(tag.trim()));
-            }
-        });
-        totalTags.textContent = tags.size;
+    if (totalHn) {
+        const hnCount = posts.reduce((sum, post) => sum + (post.hnCount || 0), 0);
+        totalHn.textContent = hnCount;
     }
 }
 
