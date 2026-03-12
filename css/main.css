@@ -800,3 +800,298 @@ footer {
 #back-to-top:hover {
     transform: scale(1.1);
 }
+
+/* ========== 博客卡片 ========== */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.blog-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent);
+}
+
+.blog-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    transition: color 0.3s;
+}
+
+.blog-card:hover .blog-title {
+    color: var(--accent);
+}
+
+.blog-excerpt {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.blog-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.blog-date {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.blog-date i {
+    color: var(--accent);
+}
+
+.blog-word-count {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.blog-word-count i {
+    color: var(--accent);
+}
+
+.read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 1rem;
+    transition: all 0.3s;
+}
+
+.read-more:hover {
+    gap: 1rem;
+    color: var(--accent-hover);
+}
+
+/* ========== 页脚更新 ========== */
+.footer-update {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.footer-update i {
+    color: var(--accent);
+    animation: heartbeat 1s infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ========== 打字机效果 ========== */
+.typing {
+    border-right: 3px solid var(--accent);
+    animation: blink 0.7s infinite;
+    padding-right: 2px;
+}
+
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+/* ========== 技能条闪烁 ========== */
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.skill-progress {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(to right, var(--accent) 0%, var(--accent-hover) 50%, var(--accent) 100%);
+    background-size: 1000px 100%;
+}
+
+/* ========== 卡片悬停光泽 ========== */
+.about-card::after,
+.project-card::after,
+.blog-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transition: left 0.5s;
+}
+
+.about-card:hover::after,
+.project-card:hover::after,
+.blog-card:hover::after {
+    left: 100%;
+}
+
+/* ========== 标签悬停波纹 ========== */
+.tag {
+    position: relative;
+    overflow: hidden;
+}
+
+.tag::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(88, 166, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.tag:hover::before {
+    width: 200px;
+    height: 200px;
+}
+
+/* ========== 章节标题高亮 ========== */
+.section-highlight {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+/* ========== 博客列表页面 ========== */
+.blog-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.blog-header h1 {
+    font-size: 2.5rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+.blog-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.search-box {
+    max-width: 600px;
+    margin: 2rem auto;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    padding-left: 3rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+}
+
+.search-box i {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+/* ========== 响应式增强 ========== */
+@media (max-width: 768px) {
+    .blog-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .stats-bar { flex-direction: column; gap: 1.5rem; }
+    .search-box { margin: 1rem; }
+}
