@@ -94,6 +94,13 @@ function loadArticle() {
             if (title) {
                 document.getElementById('article-title').textContent = title;
                 document.title = title + ' | 我的博客';
+                
+                // 移除文章内容中的第一个 H1（避免和 banner 标题重复）
+                const articleContent = document.getElementById('article-content');
+                const firstH1 = articleContent.querySelector('h1');
+                if (firstH1 && firstH1.textContent.includes(title)) {
+                    firstH1.remove();
+                }
             }
             
             // 更新元信息
