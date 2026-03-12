@@ -108,10 +108,11 @@ function loadArticle() {
                 const articleContent = document.getElementById('article-content');
                 
                 // 移除"本文由自动化脚本生成"（底部已有）
-                const paragraphs = articleContent.querySelectorAll('p, em');
-                paragraphs.forEach(p => {
-                    if (p.textContent.includes('自动化脚本生成') || p.textContent.includes('最后更新')) {
-                        p.remove();
+                const elements = articleContent.querySelectorAll('p, em, div, span');
+                elements.forEach(el => {
+                    const text = el.textContent;
+                    if (text.includes('自动化脚本生成') || text.includes('最后更新') || text.includes('🤖')) {
+                        el.remove();
                     }
                 });
                 
@@ -124,7 +125,7 @@ function loadArticle() {
                 // 移除头图（banner 已有）
                 const images = articleContent.querySelectorAll('img');
                 images.forEach(img => {
-                    if (img.alt && img.alt.includes('头图')) {
+                    if (img.alt && (img.alt.includes('头图') || img.alt.includes('header'))) {
                         img.closest('p')?.remove();
                     }
                 });
