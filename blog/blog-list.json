@@ -2,17 +2,23 @@
   {
     "title": "技术日报 2026-03-12",
     "date": "2026-03-12",
+    "file": "2026-03-12.md",
     "url": "view.html?file=2026-03-12.md",
-    "excerpt": "每日精选技术资讯，包含 GitHub Trending、Hacker News、稀土掘金热门内容...",
+    "excerpt": "每日精选技术资讯，包含 GitHub Trending、Hacker News 热门项目",
     "githubCount": 10,
-    "hnCount": 10
+    "hnCount": 10,
+    "words": 3500,
+    "tags": "技术资讯，GitHub, Hacker News"
   },
   {
     "title": "技术日报 2026-03-11",
     "date": "2026-03-11",
+    "file": "2026-03-11.md",
     "url": "view.html?file=2026-03-11.md",
-    "excerpt": "每日精选技术资讯，包含 GitHub Trending、Hacker News、稀土掘金热门内容...",
+    "excerpt": "每日精选技术资讯，包含 GitHub Trending、Hacker News 热门项目",
     "githubCount": 10,
-    "hnCount": 10
+    "hnCount": 10,
+    "words": 3200,
+    "tags": "技术资讯，GitHub, Hacker News"
   }
 ]

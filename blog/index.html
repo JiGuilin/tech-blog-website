@@ -517,22 +517,32 @@
 
         // 更新统计
         function updateStats(posts) {
-            document.getElementById('total-posts').textContent = posts.length;
-            document.getElementById('update-days').textContent = posts.length;
+            const setElement = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+            
+            setElement('total-posts', posts.length);
+            setElement('update-days', posts.length);
             
             const totalGithub = posts.reduce((sum, post) => sum + (post.githubCount || 10), 0);
             const totalHn = posts.reduce((sum, post) => sum + (post.hnCount || 10), 0);
             const totalWords = posts.reduce((sum, post) => sum + (post.words || 0), 0);
             
-            document.getElementById('total-github').textContent = totalGithub;
-            document.getElementById('total-hn').textContent = totalHn;
-            document.getElementById('total-words').textContent = totalWords.toLocaleString();
-            document.getElementById('blog-count').textContent = posts.length;
+            setElement('total-github', totalGithub);
+            setElement('total-hn', totalHn);
+            setElement('total-words', totalWords.toLocaleString());
+            setElement('blog-count', posts.length);
         }
 
         // 渲染列表
         function renderBlogList(posts) {
             const blogListEl = document.getElementById('blog-list');
+            
+            if (!blogListEl) {
+                console.error('未找到 blog-list 元素');
+                return;
+            }
             
             if (!posts || posts.length === 0) {
                 showEmptyState();
