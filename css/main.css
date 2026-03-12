@@ -503,3 +503,300 @@ footer {
     from { opacity: 1; transform: translateX(-50%) translateY(0); }
     to { opacity: 0; transform: translateX(-50%) translateY(20px); }
 }
+
+/* ========== 粒子背景 ========== */
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    background: rgba(88, 166, 255, 0.3);
+    border-radius: 50%;
+    animation: float 20s infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+}
+
+/* ========== 关于网格 ========== */
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.about-card {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent);
+}
+
+.about-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+}
+
+/* ========== 项目卡片 ========== */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent);
+}
+
+.project-count {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--gradient);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.project-image {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.project-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.project-desc {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tag {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+}
+
+.project-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.project-links a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.project-links a:hover {
+    color: var(--accent-hover);
+}
+
+/* ========== 联系方式 ========== */
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.contact-card {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+    transition: all 0.3s;
+    text-decoration: none;
+    color: inherit;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent);
+}
+
+.contact-icon {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+}
+
+.contact-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.contact-value {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* ========== 博客状态卡片 ========== */
+.blog-status-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.blog-status-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: var(--accent);
+}
+
+.blog-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.blog-status-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+}
+
+.blog-status-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+}
+
+.blog-status-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ========== 时间线 ========== */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 2rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.timeline-date {
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-title {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.timeline-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ========== 访客计数器 ========== */
+#visitor-counter, #uptime-counter {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#visitor-counter:hover, #uptime-counter:hover {
+    transform: scale(1.05);
+}
+
+/* ========== 回到顶部 ========== */
+#back-to-top {
+    cursor: pointer;
+}
+
+#back-to-top:hover {
+    transform: scale(1.1);
+}
