@@ -1348,3 +1348,10 @@ footer {
     .stats { grid-template-columns: repeat(2, 1fr); }
     .blog-meta { flex-direction: column; gap: 0.5rem; }
 }
+
+/* 主容器 - 避免被固定导航栏遮挡 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 2rem 4rem;
+}
