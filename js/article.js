@@ -137,6 +137,9 @@ function loadArticle() {
             // 更新元信息
             if (frontMatter.date) {
                 document.getElementById('publish-date').textContent = frontMatter.date;
+                // 更新页脚时间
+                const footerTime = document.getElementById('footer-update-time');
+                if (footerTime) footerTime.textContent = frontMatter.date;
             }
             if (frontMatter.tags) {
                 const tags = Array.isArray(frontMatter.tags) ? frontMatter.tags : [frontMatter.tags];
