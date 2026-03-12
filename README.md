@@ -105,10 +105,10 @@ cd tech-blog-website
 ### 2. 启动 HTTP 服务器
 
 ```bash
-python3 -m http.server 8080
+python3 -m http.server 8080 --bind 0.0.0.0
 ```
 
-### 3. 配置 Ngrok（可选）
+### 3. 配置 Ngrok
 
 ```bash
 ngrok http 8080
@@ -116,7 +116,7 @@ ngrok http 8080
 
 ### 4. 访问网站
 
-打开浏览器访问 `http://localhost:8080`
+打开浏览器访问 ngrok 显示的 URL
 
 ---
 
@@ -161,6 +161,7 @@ done
 - ✅ 系统状态监控页面
 - ✅ 快捷键支持
 - ✅ 双击导航
+- ✅ 部署配置更新（ngrok 8080 端口）
 
 ### 2026-03-11
 - ✅ 项目初始化
@@ -184,6 +185,9 @@ git add -A && git commit -m "feat: xxx" && git push
 
 # 检查 HTTP 服务器
 curl -I http://localhost:8080
+
+# 查看 ngrok 隧道
+curl -s http://localhost:4040/api/tunnels | python3 -m json.tool
 
 # 查看监控日志
 tail -f /tmp/http_monitor.log
@@ -217,4 +221,4 @@ MIT License - 详见 [LICENSE](LICENSE)
 
 **⭐ 如果这个项目对你有帮助，请给个 Star！**
 
-*最后更新：2026-03-12 09:51*
+*最后更新：2026-03-12 11:55*
