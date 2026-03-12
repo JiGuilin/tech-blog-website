@@ -123,6 +123,27 @@
             width: 100%;
         }
         
+        /* 主题切换按钮 */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+        
         /* 主容器 */
         .container {
             max-width: 1200px;
@@ -435,6 +456,11 @@
                 <li><a href="index.html" style="color: var(--accent);">博客</a></li>
                 <li><a href="../index.html#contact">联系</a></li>
             </ul>
+            <button class="theme-toggle" id="theme-toggle" title="切换主题 (T)">
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+                <span id="theme-text">深色</span>
+            </button>
         </div>
     </nav>
 
@@ -610,6 +636,59 @@
         });
 
         document.addEventListener('DOMContentLoaded', loadBlogList);
+        
+        // ========== 主题切换功能 ==========
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const hour = new Date().getHours();
+            let defaultTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+            if (savedTheme) {
+                setTheme(savedTheme, false);
+            } else {
+                setTheme(defaultTheme, false);
+            }
+            updateThemeText();
+        }
+        
+        function setTheme(theme, save = true) {
+            if (theme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            if (save) {
+                localStorage.setItem('theme', theme);
+                updateThemeText();
+            }
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        }
+        
+        function updateThemeText() {
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (themeText) {
+                themeText.textContent = currentTheme === 'light' ? '浅色' : '深色';
+            }
+        }
+        
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 't' || e.key === 'T') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+        
+        initTheme();
     </script>
 </body>
 </html>

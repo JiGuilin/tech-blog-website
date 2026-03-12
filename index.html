@@ -17,6 +17,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
+            /* 暗色主题（默认） */
             --bg-primary: #0d1117;
             --bg-secondary: #161b22;
             --bg-card: #21262d;
@@ -27,6 +28,22 @@
             --border: #30363d;
             --code-bg: #1f2428;
             --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 亮色主题 */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-card: #ffffff;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent: #0969da;
+            --accent-hover: #0550ae;
+            --border: #d0d7de;
+            --code-bg: #f6f8fa;
+            --gradient: linear-gradient(135deg, #0969da 0%, #0550ae 100%);
+            --shadow: rgba(0, 0, 0, 0.08);
         }
         
         body {
@@ -1057,6 +1074,56 @@
             .hero h1 { font-size: 2rem; }
             .about-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
+        
+        /* 主题切换按钮 */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .theme-toggle i {
+            font-size: 1.1rem;
+        }
+        
+        .theme-toggle .theme-icon {
+            transition: transform 0.3s;
+        }
+        
+        .theme-toggle:hover .theme-icon {
+            transform: rotate(180deg);
+        }
+        
+        [data-theme="light"] .theme-toggle .fa-moon {
+            display: inline;
+        }
+        
+        [data-theme="light"] .theme-toggle .fa-sun {
+            display: none;
+        }
+        
+        .theme-toggle .fa-moon {
+            display: none;
+        }
+        
+        .theme-toggle .fa-sun {
+            display: inline;
+        }
         }
     </style>
 </head>
@@ -1076,6 +1143,11 @@
                 <li><a href="blog/index.html">博客</a></li>
                 <li><a href="#contact">联系</a></li>
             </ul>
+            <button class="theme-toggle" id="theme-toggle" title="切换主题 (T)">
+                <i class="fas fa-sun theme-icon"></i>
+                <i class="fas fa-moon"></i>
+                <span id="theme-text">深色</span>
+            </button>
         </div>
     </nav>
 
@@ -1688,9 +1760,14 @@
                 e.preventDefault();
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             }
-            // T 键 - 切换主题（未来功能）
+            // T 键 - 切换主题
             if (e.key === 't' || e.key === 'T') {
-                console.log('🎨 主题切换功能开发中...');
+                e.preventDefault();
+                toggleTheme();
+                // 显示提示
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const themeName = currentTheme === 'light' ? '浅色' : '深色';
+                console.log(`🎨 已切换到${themeName}主题`);
             }
             // ? 键 - 显示快捷键帮助
             if (e.key === '?' || (e.shiftKey && e.key === '/')) {
@@ -1706,6 +1783,7 @@
 
 Home  - 回到顶部
 End   - 滚动到底部
+T     - 切换明暗主题
 ?     - 显示此帮助
 
 💡 更多功能开发中...
@@ -1713,6 +1791,65 @@ End   - 滚动到底部
             console.log(help);
             alert(help);
         }
+
+        // ========== 主题切换功能 ==========
+        
+        // 初始化主题
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const hour = new Date().getHours();
+            
+            // 默认根据时间自动切换（6:00-18:00 亮色，其他时间暗色）
+            let defaultTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+            
+            // 如果用户有保存的偏好，使用保存的
+            if (savedTheme) {
+                setTheme(savedTheme, false);
+            } else {
+                setTheme(defaultTheme, false);
+            }
+            
+            updateThemeText();
+        }
+        
+        // 设置主题
+        function setTheme(theme, save = true) {
+            if (theme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            
+            if (save) {
+                localStorage.setItem('theme', theme);
+                updateThemeText();
+            }
+        }
+        
+        // 切换主题
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        }
+        
+        // 更新主题按钮文字
+        function updateThemeText() {
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (themeText) {
+                themeText.textContent = currentTheme === 'light' ? '浅色' : '深色';
+            }
+        }
+        
+        // 主题切换按钮事件
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+        
+        // 初始化主题
+        initTheme();
 
         // 平滑滚动到锚点 - 增强版
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
