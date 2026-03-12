@@ -674,6 +674,15 @@
                     <button class="share-btn" onclick="copyLink()" title="复制链接">
                         <i class="fas fa-link"></i>
                     </button>
+                    <button class="share-btn" onclick="shareToWeixin()" title="分享到微信">
+                        <i class="fab fa-weixin"></i>
+                    </button>
+                    <button class="share-btn" onclick="shareToWeibo()" title="分享到微博">
+                        <i class="fab fa-weibo"></i>
+                    </button>
+                    <button class="share-btn" onclick="shareToTwitter()" title="分享到 Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </button>
                     <button class="share-btn" onclick="window.print()" title="打印">
                         <i class="fas fa-print"></i>
                     </button>
@@ -879,6 +888,90 @@
                 }, 2000);
             });
         }
+
+        // ========== 分享功能 ==========
+        
+        // 复制链接
+        function copyLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('📋 链接已复制到剪贴板');
+            }).catch(() => {
+                // 降级方案
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast('📋 链接已复制');
+            });
+        }
+
+        // 分享到微信
+        function shareToWeixin() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(document.title);
+            // 微信没有官方分享链接，提示用户手动分享
+            showToast('💬 请打开微信，粘贴链接分享给好友');
+        }
+
+        // 分享到微博
+        function shareToWeibo() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(document.title);
+            const shareUrl = `https://service.weibo.com/share/share.php?url=${url}&title=${title}`;
+            window.open(shareUrl, '_blank');
+        }
+
+        // 分享到 Twitter
+        function shareToTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(document.title);
+            const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+            window.open(shareUrl, '_blank');
+        }
+
+        // 显示提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--bg-card);
+                color: var(--text-primary);
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-size: 0.95rem;
+                animation: toastIn 0.3s ease-out;
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+        
+        // 添加动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes toastIn {
+                from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            }
+            @keyframes toastOut {
+                from { opacity: 1; transform: translateX(-50%) translateY(0); }
+                to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            }
+        `;
+        document.head.appendChild(style);
 
         // ========== 文章目录功能 ==========
         function generateTOC() {
