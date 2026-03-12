@@ -90,6 +90,14 @@
             transform: translateX(-5px);
         }
         
+        .logo-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+        
         .nav-right {
             display: flex;
             align-items: center;
@@ -469,7 +477,7 @@
     <nav id="navbar">
         <div class="nav-container">
             <a href="../index.html" class="logo">
-                <i class="fas fa-code"></i>
+                <img src="../avatar.jpg" alt="Logo" class="logo-avatar" onerror="this.style.display='none'">
                 <span>MyBlog</span>
             </a>
             <div class="nav-right">
