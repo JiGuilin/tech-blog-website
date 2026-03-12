@@ -531,3 +531,22 @@ nav.scrolled {
     .container { padding: 2rem; }
     .article { box-shadow: none; }
 }
+
+/* ========== 主题切换图标显示 ========== */
+/* 默认暗色主题：显示月亮图标，隐藏太阳图标 */
+.theme-toggle .fa-sun {
+    display: none;
+}
+
+.theme-toggle .fa-moon {
+    display: inline-block;
+}
+
+/* 亮色主题：显示太阳图标，隐藏月亮图标 */
+[data-theme="light"] .theme-toggle .fa-sun {
+    display: inline-block;
+}
+
+[data-theme="light"] .theme-toggle .fa-moon {
+    display: none;
+}
