@@ -5,12 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="ngrok-skip-browser-warning" content="true">
     <meta name="description" content="个人技术博客 - 每日精选 GitHub Trending 和 Hacker News 技术资讯，自动化更新">
-    <meta name="keywords" content="技术博客，GitHub, Hacker News, 编程，自动化">
+    <meta name="keywords" content="技术博客，GitHub, Hacker News, 编程，自动化，技术日报">
     <meta name="author" content="JiGuilin">
+    <meta name="theme-color" content="#161b22">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:title" content="我的个人博客 | Tech Blog">
-    <meta property="og:description" content="每日精选技术资讯，自动化更新">
+    <meta property="og:description" content="每日精选技术资讯，自动化更新 - GitHub Trending + Hacker News">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://imply-carotidal-velda.ngrok-free.dev">
+    <meta property="og:image" content="https://placehold.co/1200x630/161b22/58a6ff?text=Tech+Blog&font=montserrat">
+    <meta property="og:site_name" content="Tech Blog">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="我的个人博客 | Tech Blog">
+    <meta name="twitter:description" content="每日精选技术资讯，自动化更新 - GitHub Trending + Hacker News">
+    <meta name="twitter:image" content="https://placehold.co/1200x630/161b22/58a6ff?text=Tech+Blog&font=montserrat">
+    
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/avatar.jpg">
+    
     <title>我的个人博客 | Tech Blog</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -413,6 +429,32 @@
             50% { transform: scale(1.2); }
         }
     </style>
+
+    <!-- 结构化数据 (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Tech Blog",
+        "alternateName": "个人技术博客",
+        "url": "https://imply-carotidal-velda.ngrok-free.dev",
+        "description": "每日精选 GitHub Trending 和 Hacker News 技术资讯，自动化更新",
+        "author": {
+            "@type": "Person",
+            "name": "JiGuilin",
+            "email": "jiguiling1985@icloud.com"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "JiGuilin"
+        },
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://imply-carotidal-velda.ngrok-free.dev/blog/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 
     <!-- JS 功能由 js/main.js 提供 -->
     <script src="js/main.js"></script>
