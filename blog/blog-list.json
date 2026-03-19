@@ -5,13 +5,13 @@
     "tags": "技术资讯，GitHub, Hacker News, AI, 计算机视觉",
     "cover": "https://placehold.co/1200x400/161b22/58a6ff?text=AI+Dance+Generation+|+Tech+Daily+2026-03-20&font=montserrat",
     "icon": "💃",
-    "github_count": 6,
-    "hn_count": 5,
     "special_topic": "AI 舞蹈生成技术",
     "file": "2026-03-20.md",
     "url": "view.html?file=2026-03-20.md",
     "excerpt": "AI 舞蹈生成技术解析专题，包含 GitHub Trending 和 Hacker News 精选",
-    "words": 2800
+    "words": 2800,
+    "githubCount": 6,
+    "hnCount": 5
   },
   {
     "title": "技术日报 2026-03-19",
