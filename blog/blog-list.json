@@ -1,13 +1,35 @@
 [
   {
+    "title": "技术日报 2026-03-19",
+    "date": "2026-03-19",
+    "file": "2026-03-19.md",
+    "url": "view.html?file=2026-03-19.md",
+    "excerpt": "每日精选技术资讯，包含 GitHub Trending、Hacker News 热门项目",
+    "githubCount": 5,
+    "hnCount": 4,
+    "words": 2284,
+    "tags": "[技术资讯，GitHub, Hacker News]"
+  },
+  {
+    "title": "技术日报 2026-03-18",
+    "date": "2026-03-18",
+    "file": "2026-03-18.md",
+    "url": "view.html?file=2026-03-18.md",
+    "excerpt": "每日精选技术资讯，包含 GitHub Trending、Hacker News 热门项目",
+    "githubCount": 6,
+    "hnCount": 7,
+    "words": 2944,
+    "tags": "[技术资讯，GitHub, Hacker News]"
+  },
+  {
     "title": "跨平台开发实战：Boost + Tauri 环境搭建指南",
     "date": "2026-03-17",
     "file": "2026-03-17.md",
     "url": "view.html?file=2026-03-17.md",
-    "excerpt": "在 Ubuntu 22.04 服务器上搭建 C++ 和 Rust 跨平台开发环境，打造高性能桌面应用",
+    "excerpt": "每日精选技术资讯，包含 GitHub Trending、Hacker News 热门项目",
     "githubCount": 0,
     "hnCount": 0,
-    "words": 8755,
+    "words": 8708,
     "tags": "[C++, Rust, Tauri, Boost, 跨平台开发]"
   },
   {
